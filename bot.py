@@ -1,6 +1,7 @@
 import os
 import asyncio
 import traceback
+import logging
 from binascii import (
     Error
 )
@@ -33,6 +34,11 @@ from handlers.broadcast_handlers import main_broadcast_handler
 from handlers.save_media import (
     save_media_in_channel,
 )
+
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+)
+logging.getLogger("pyrogram").setLevel(logging.ERROR)
 
 MediaList = {}
 
