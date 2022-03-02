@@ -30,7 +30,7 @@ async def handle_force_sub(bot: Client, cmd: Message):
         if user.status == "kicked":
             await bot.send_message(
                 chat_id=cmd.from_user.id,
-                text="شما بن شده اید",
+                text="✨ شما به علت عدم رعایت قوانین از بات بن شده و دیگر نمیتوانید استفاده کنید!",
                 parse_mode="markdown",
                 disable_web_page_preview=True
             )
@@ -43,14 +43,14 @@ async def handle_force_sub(bot: Client, cmd: Message):
             return 200
         await bot.send_message(
             chat_id=cmd.from_user.id,
-            text="**لطفا در چنل زیر عضو شده و پس از عضویت بر روی دکمه رفرش کلیک نمایید**",
+            text="✨ **لطفا در چنل زیر جوین شده و پس از عضویت روی بررسی عضویت کلیک کنید!**",
             reply_markup=InlineKeyboardMarkup(
                 [
                     [
-                        InlineKeyboardButton("✵ Join Updates Channel ✵", url=invite_link.invite_link)
+                        InlineKeyboardButton("🔸 عضویت در چنل 🔹", url=invite_link.invite_link)
                     ],
                     [
-                        InlineKeyboardButton("🔄 Refresh 🔄", callback_data="refreshForceSub")
+                        InlineKeyboardButton("👁‍🗨 بررسی عضویت 👁‍🗨", callback_data="refreshForceSub")
                     ]
                 ]
             ),
