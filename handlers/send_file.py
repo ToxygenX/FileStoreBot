@@ -9,7 +9,7 @@ from handlers.helpers import str_to_b64
 async def reply_forward(message: Message, file_id: int):
     try:
         await message.reply_text(
-            f"⚠️ فایل بالا بعد از 60 ثانیه حذف خواهد شد !\n"
+            f"⚠️ فایل بالا بعد از 30 ثانیه حذف خواهد شد !\n"
             f"➖ سریعا فایل را share کنید.\n"
             f"📥 [برای دریافت مجدد فایل کلیک کنید.](https://t.me/{Config.BOT_USERNAME}?start=HotLandXD_{str_to_b64(str(file_id))})\n\n"
             f"✨ @HotLandXD",
@@ -31,9 +31,9 @@ async def media_forward(bot: Client, user_id: int, file_id: int):
         await asyncio.sleep(e.x)
         return media_forward(bot, user_id, file_id)
 
-async def del_in(messages):
+async def del_in(messages: Message):
     await asyncio.sleep(30)
-    for msg in messages:
+    for msg in message:
         try:
             await msg.delete()
         except:
