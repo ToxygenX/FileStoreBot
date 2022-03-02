@@ -111,22 +111,22 @@ async def main(bot: Client, message: Message):
             if back == 400:
                 return
 
-        if message.from_user.id in Config.BANNED_USERS:
+        elif message.from_user.id in Config.BANNED_USERS:
             await message.reply_text("شما بن شده اید",
                                      disable_web_page_preview=True)
             return
 
-        if Config.OTHER_USERS_CAN_SAVE_FILE == False:
+        elif Config.OTHER_USERS_CAN_SAVE_FILE is False:
             return
-
-        await message.reply_text(
-            text="**Choose an option from below:**",
-            reply_markup=InlineKeyboardMarkup([
-                [InlineKeyboardButton("Get Sharable Link", callback_data="addToBatchFalse")]
-            ]),
-            quote=True,
-            disable_web_page_preview=True
-        )
+        else:
+            await message.reply_text(
+                text="**Choose an option from below:**",
+                reply_markup=InlineKeyboardMarkup([
+                    [InlineKeyboardButton("Get Sharable Link", callback_data="addToBatchFalse")]
+                ]),
+                quote=True,
+                disable_web_page_preview=True
+            )
     elif message.chat.type == "channel":
         if (message.chat.id == int(Config.LOG_CHANNEL)) or (message.chat.id == int(Config.UPDATES_CHANNEL)) or message.forward_from_chat or message.forward_from:
             return
