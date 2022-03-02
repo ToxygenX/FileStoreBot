@@ -31,7 +31,7 @@ async def media_forward(bot: Client, user_id: int, file_id: int):
         await asyncio.sleep(e.x)
         return media_forward(bot, user_id, file_id)
 
-async def del_in(messages: Message):
+async def del_in(message: Message):
     await asyncio.sleep(30)
     for msg in message:
         try:
