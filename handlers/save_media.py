@@ -67,7 +67,7 @@ async def save_media_in_channel(bot: Client, editable: Message, message: Message
             )
         await save_media_in_channel(bot, editable, message)
     except Exception as err:
-        await editable.edit(f"Something Went Wrong!\n\n**Error:** `{err}`")
+        await editable.edit("✨ فایل پاک شده است و لینک دیگر معتبر نیست!")
         await bot.send_message(
             chat_id=int(Config.LOG_CHANNEL),
             text="#ERROR_TRACEBACK:\n"
