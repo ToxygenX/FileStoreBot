@@ -107,28 +107,31 @@ async def start(bot: Client, cmd: Message):
 
 @Bot.on_message((filters.document | filters.video | filters.audio) & ~filters.edited & ~filters.chat(Config.DB_CHANNEL))
 async def main(bot: Client, message: Message):
-
     if message.chat.type == "private":
+        await add_user_to_database(bot, message)
+        if Config.UPDATES_CHANNEL is not None:
+            back = await handle_force_sub(bot, message)
+            if back == 400:
+                return
+        elif message.from_user.id in Config.BANNED_USERS:
+            await message.reply_text("شما بن شده اید",
+                                     disable_web_page_preview=True)
+            return
         try:
-            await add_user_to_database(bot, message)
-            if Config.UPDATES_CHANNEL is not None:
-                back = await handle_force_sub(bot, message)
-                if back == 400:
+            if Config.OTHER_USERS_CAN_SAVE_FILE is False:
+                return
+            else:
+                if message.from_user.id in Config.BOT_OWNER:
+                    await message.reply_text(
+                        text="**Choose an option from below:**",
+                        reply_markup=InlineKeyboardMarkup([
+                            [InlineKeyboardButton("Get Sharable Link", callback_data="addToBatchFalse")]
+                        ]),
+                        quote=True,
+                        disable_web_page_preview=True
+                    )
+                else:
                     return
-            elif message.from_user.id in Config.BANNED_USERS:
-                await message.reply_text("شما بن شده اید",
-                                         disable_web_page_preview=True)
-                return
-            elif Config.OTHER_USERS_CAN_SAVE_FILE is False:
-                return
-            await message.reply_text(
-                text="**Choose an option from below:**",
-                reply_markup=InlineKeyboardMarkup([
-                    [InlineKeyboardButton("Get Sharable Link", callback_data="addToBatchFalse")]
-                ]),
-                quote=True,
-                disable_web_page_preview=True
-            )
         except Exception as e:
             logging.info(f"ERROR: {str(e)}")
     elif message.chat.type == "channel":
