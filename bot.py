@@ -109,22 +109,18 @@ async def start(bot: Client, cmd: Message):
 async def main(bot: Client, message: Message):
 
     if message.chat.type == "private":
-
-        await add_user_to_database(bot, message)
-
-        if Config.UPDATES_CHANNEL is not None:
-            back = await handle_force_sub(bot, message)
-            if back == 400:
+        try:
+            await add_user_to_database(bot, message)
+            if Config.UPDATES_CHANNEL is not None:
+                back = await handle_force_sub(bot, message)
+                if back == 400:
+                    return
+            elif message.from_user.id in Config.BANNED_USERS:
+                await message.reply_text("شما بن شده اید",
+                                         disable_web_page_preview=True)
                 return
-
-        elif message.from_user.id in Config.BANNED_USERS:
-            await message.reply_text("شما بن شده اید",
-                                     disable_web_page_preview=True)
-            return
-
-        elif Config.OTHER_USERS_CAN_SAVE_FILE is False:
-            return
-        else:
+            elif Config.OTHER_USERS_CAN_SAVE_FILE is False:
+                return
             await message.reply_text(
                 text="**Choose an option from below:**",
                 reply_markup=InlineKeyboardMarkup([
@@ -133,6 +129,8 @@ async def main(bot: Client, message: Message):
                 quote=True,
                 disable_web_page_preview=True
             )
+        except Exception as e:
+            logging.info(f"ERROR: {str(e)}")
     elif message.chat.type == "channel":
         if (message.chat.id == int(Config.LOG_CHANNEL)) or (message.chat.id == int(Config.UPDATES_CHANNEL)) or message.forward_from_chat or message.forward_from:
             return
