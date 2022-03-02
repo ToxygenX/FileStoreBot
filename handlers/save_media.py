@@ -39,9 +39,10 @@ async def save_media_in_channel(bot: Client, editable: Message, message: Message
             parse_mode="Markdown", disable_web_page_preview=True)
         share_link = f"https://t.me/{Config.BOT_USERNAME}?start=HotLandXD_{str_to_b64(file_er_id)}"
         await editable.edit(
-            "**Your File Stored in my Database!**\n\n"
-            f"Here is the Permanent Link of your file: {share_link} \n\n"
-            "Just Click the link to get your file!",
+            f"💢 فایل شما در بات ذخیره شد!\n"
+            f"💠 آدرس فایل ذخیره شده :\n"
+            f"{share_link}"
+            f"➰ جهت دریافت فایل روی لینک کلیک کنید.",
             parse_mode="Markdown",
             reply_markup=InlineKeyboardMarkup(
                 [[InlineKeyboardButton("Open Link", url=share_link)]]
