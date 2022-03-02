@@ -351,7 +351,7 @@ async def button(bot: Client, cmd: CallbackQuery):
         if Config.UPDATES_CHANNEL is None:
             await cmd.answer("Sorry, You didn't Set any Updates Channel!", show_alert=True)
             return
-        if not int(cmd.from_user.id) == Config.BOT_OWNER:
+        if not int(cmd.from_user.id) in Config.BOT_OWNER:
             await cmd.answer("You are not allowed to do that!", show_alert=True)
             return
         try:
