@@ -27,8 +27,7 @@ from handlers.send_file import send_media_and_reply
 from handlers.helpers import b64_to_str, str_to_b64
 from handlers.check_user_status import handle_user_status
 from handlers.force_sub_handler import (
-    handle_force_sub,
-    get_invite_link
+    handle_force_sub
 )
 from handlers.broadcast_handlers import main_broadcast_handler
 from handlers.save_media import (
@@ -302,11 +301,14 @@ async def _banned_users(_, m: Message):
 async def button(bot: Client, cmd: CallbackQuery):
     cb_data = cmd.data
     if "refreshForceSub" in cb_data:
+
         if Config.UPDATES_CHANNEL:
-            if Config.UPDATES_CHANNEL.startswith("-100"):
-                channel_chat_id = int(Config.UPDATES_CHANNEL)
-            else:
-                channel_chat_id = Config.UPDATES_CHANNEL
+            if type(Config.UPDATES_CHANNEL[0]) == int:
+                for m in Config.UPDATES_CHANNEL:
+                    channel_chat_id = int(m)
+            elif type(Config.UPDATES_CHANNEL[0]) == str:
+                for m in Config.UPDATES_CHANNEL:
+                    channel_chat_id = m
             try:
                 user = await bot.get_chat_member(channel_chat_id, cmd.message.chat.id)
                 if user.status == "kicked":
@@ -317,16 +319,20 @@ async def button(bot: Client, cmd: CallbackQuery):
                     )
                     return
             except UserNotParticipant:
-                invite_link = await get_invite_link(channel_chat_id)
+                invite_link1 = await bot.create_chat_invite_link(chat_id=channel_chat_id[0]) 
+                invite_link2 = await bot.create_chat_invite_link(chat_id=channel_chat_id[1])
                 await cmd.message.edit(
-                    text="**لطفا در چنل زیر عضو شده و پس از عضویت بر روی دکمه رفرش کلیک نمایید**",
+                    text="**لطفا در چنل های زیر عضو شده و پس از عضویت بر روی دکمه بررسی عضویت کلیک نمایید**",
                     reply_markup=InlineKeyboardMarkup(
                         [
                             [
-                                InlineKeyboardButton("✵ Join Updates Channel ✵", url=invite_link.invite_link)
+                                InlineKeyboardButton("🔸1 عضویت در چنل 🔹", url=invite_link1)
                             ],
                             [
-                                InlineKeyboardButton("🔄 Refresh 🔄", callback_data="refreshmeh")
+                                InlineKeyboardButton("🔸2 عضویت در چنل 🔹", url=invite_link2)
+                            ],
+                            [
+                                InlineKeyboardButton("👁‍🗨 بررسی عضویت 👁‍🗨", callback_data="refreshmeh")
                             ]
                         ]
                     ),
