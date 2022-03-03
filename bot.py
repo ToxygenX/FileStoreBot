@@ -32,6 +32,7 @@ from handlers.force_sub_handler import (
 from handlers.broadcast_handlers import main_broadcast_handler
 from handlers.save_media import (
     save_media_in_channel,
+    get_invite_link
 )
 
 logging.basicConfig(
@@ -60,7 +61,7 @@ async def start(bot: Client, cmd: Message):
     if cmd.from_user.id in Config.BANNED_USERS:
         await cmd.reply_text("شما بن شده اید")
         return
-    if Config.UPDATES_CHANNEL is not None:
+    if Config.UPDATES_CHANNEL1 and Config.UPDATES_CHANNEL2 is not None:
         back = await handle_force_sub(bot, cmd)
         if back == 400:
             return
@@ -108,7 +109,7 @@ async def start(bot: Client, cmd: Message):
 async def main(bot: Client, message: Message):
     if message.chat.type == "private":
         await add_user_to_database(bot, message)
-        if Config.UPDATES_CHANNEL is not None:
+        if Config.UPDATES_CHANNEL1 and Config.UPDATES_CHANNEL2 is not None:
             back = await handle_force_sub(bot, message)
             if back == 400:
                 return
@@ -134,7 +135,7 @@ async def main(bot: Client, message: Message):
         except Exception as e:
             logging.info(f"ERROR: {str(e)}")
     elif message.chat.type == "channel":
-        if (message.chat.id == int(Config.LOG_CHANNEL)) or (message.chat.id == int(Config.UPDATES_CHANNEL)) or message.forward_from_chat or message.forward_from:
+        if (message.chat.id == int(Config.LOG_CHANNEL)) or (message.chat.id == int(Config.UPDATES_CHANNEL1)) or (message.chat.id == int(Config.UPDATES_CHANNEL2)) or message.forward_from_chat or message.forward_from:
             return
         elif int(message.chat.id) in Config.BANNED_CHAT_IDS:
             await bot.leave_chat(message.chat.id)
@@ -301,16 +302,16 @@ async def _banned_users(_, m: Message):
 async def button(bot: Client, cmd: CallbackQuery):
     cb_data = cmd.data
     if "refreshForceSub" in cb_data:
-
-        if Config.UPDATES_CHANNEL:
-            if type(Config.UPDATES_CHANNEL[0]) == int:
-                for m in Config.UPDATES_CHANNEL:
-                    channel_chat_id = int(m)
-            elif type(Config.UPDATES_CHANNEL[0]) == str:
-                for m in Config.UPDATES_CHANNEL:
-                    channel_chat_id = m
+        if Config.UPDATES_CHANNEL1 and Config.UPDATES_CHANNEL2:
+            if Config.UPDATES_CHANNEL1.startswith("-100") and Config.UPDATES_CHANNEL2.startswith("-100"):
+                channel_chat_id1 = int(Config.UPDATES_CHANNEL1)
+                channel_chat_id2 = int(Config.UPDATES_CHANNEL2)
+            else:
+                channel_chat_id1 = Config.UPDATES_CHANNEL1
+                channel_chat_id2 = Config.UPDATES_CHANNEL2
             try:
-                user = await bot.get_chat_member(channel_chat_id, cmd.message.chat.id)
+                user = await bot.get_chat_member(channel_chat_id1, cmd.message.chat.id)
+                user = await bot.get_chat_member(channel_chat_id2, cmd.message.chat.id) 
                 if user.status == "kicked":
                     await cmd.message.edit(
                         text="شما بن شده اید",
@@ -319,17 +320,17 @@ async def button(bot: Client, cmd: CallbackQuery):
                     )
                     return
             except UserNotParticipant:
-                invite_link1 = await bot.create_chat_invite_link(chat_id=channel_chat_id[0]) 
-                invite_link2 = await bot.create_chat_invite_link(chat_id=channel_chat_id[1])
+                invite_link1 = await get_invite_link(channel_chat_id1)
+                invite_link2 = await get_invite_link(channel_chat_id2)
                 await cmd.message.edit(
                     text="**لطفا در چنل های زیر عضو شده و پس از عضویت بر روی دکمه بررسی عضویت کلیک نمایید**",
                     reply_markup=InlineKeyboardMarkup(
                         [
                             [
-                                InlineKeyboardButton("🔸1 عضویت در چنل 🔹", url=invite_link1)
+                                InlineKeyboardButton("🔸1 عضویت در چنل 🔹", url=invite_link.invite_link1)
                             ],
                             [
-                                InlineKeyboardButton("🔸2 عضویت در چنل 🔹", url=invite_link2)
+                                InlineKeyboardButton("🔸2 عضویت در چنل 🔹", url=invite_link.invite_link2)
                             ],
                             [
                                 InlineKeyboardButton("👁‍🗨 بررسی عضویت 👁‍🗨", callback_data="refreshmeh")
@@ -361,14 +362,15 @@ async def button(bot: Client, cmd: CallbackQuery):
 
     elif cb_data.startswith("ban_user_"):
         user_id = cb_data.split("_", 2)[-1]
-        if Config.UPDATES_CHANNEL is None:
+        if Config.UPDATES_CHANNEL1 and Config.UPDATES_CHANNEL2 is None:
             await cmd.answer("Sorry, You didn't Set any Updates Channel!", show_alert=True)
             return
         if not int(cmd.from_user.id) in Config.BOT_OWNER:
             await cmd.answer("You are not allowed to do that!", show_alert=True)
             return
         try:
-            await bot.kick_chat_member(chat_id=int(Config.UPDATES_CHANNEL), user_id=int(user_id))
+            await bot.kick_chat_member(chat_id=int(Config.UPDATES_CHANNEL1), user_id=int(user_id))
+            await bot.kick_chat_member(chat_id=int(Config.UPDATES_CHANNEL2), user_id=int(user_id))
             await cmd.answer("User Banned from Updates Channel!", show_alert=True)
         except Exception as e:
             await cmd.answer(f"Can't Ban Him!\n\nError: {e}", show_alert=True)
