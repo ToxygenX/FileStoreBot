@@ -54,7 +54,7 @@ async def handle_force_sub(bot: Client, cmd: Message):
                         InlineKeyboardButton("🔸1 عضویت در چنل 🔹", url=invite_link.invite_link) 
                     ],
                     [
-                        InlineKeyboardButton("🔸2 عضویت در چنل 🔹", url=invite_link.invite_linc) 
+                        InlineKeyboardButton("🔸2 عضویت در چنل 🔹", url=invite_linc.invite_link) 
                     ],
                     [
                         InlineKeyboardButton("👁‍🗨 بررسی عضویت 👁‍🗨", callback_data="refreshForceSub")
