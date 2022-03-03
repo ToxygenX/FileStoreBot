@@ -21,9 +21,11 @@ async def get_invite_link(bot: Client, chat_id: Union[str, int]):
 async def handle_force_sub(bot: Client, cmd: Message):
     if Config.UPDATES_CHANNEL:
         if type(Config.UPDATES_CHANNEL[0]) == int:
-            channel_chat_id = int(Config.UPDATES_CHANNEL)
+            for m in Config.UPDATES_CHANNEL:
+                channel_chat_id = int(m)
         elif type(Config.UPDATES_CHANNEL[0]) == str:
-            channel_chat_id = Config.UPDATES_CHANNEL
+            for m in Config.UPDATES_CHANNEL:
+                channel_chat_id = m
     else:
         return 200
     try:
@@ -38,9 +40,8 @@ async def handle_force_sub(bot: Client, cmd: Message):
             return 400
     except UserNotParticipant:
         try:
-            for i in channel_chat_id:
-                invite_link1 = await get_invite_link(bot, chat_id=i[0])
-                invite_link2 = await get_invite_link(bot, chat_id=i[1])
+            invite_link1 = await get_invite_link(bot, chat_id=channel_chat_id[0])
+            invite_link2 = await get_invite_link(bot, chat_id=channel_chat_id[1])
         except Exception as err:
             print(f"Unable to do Force Subscribe to {Config.UPDATES_CHANNEL}\n\nError: {err}")
             return 200
