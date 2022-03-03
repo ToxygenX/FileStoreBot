@@ -320,17 +320,17 @@ async def button(bot: Client, cmd: CallbackQuery):
                     )
                     return
             except UserNotParticipant:
-                invite_link1 = await get_invite_link(channel_chat_id1)
-                invite_link2 = await get_invite_link(channel_chat_id2)
+                invite_link = await get_invite_link(channel_chat_id1)
+                invite_linc = await get_invite_link(channel_chat_id2)
                 await cmd.message.edit(
                     text="**لطفا در چنل های زیر عضو شده و پس از عضویت بر روی دکمه بررسی عضویت کلیک نمایید**",
                     reply_markup=InlineKeyboardMarkup(
                         [
                             [
-                                InlineKeyboardButton("🔸1 عضویت در چنل 🔹", url=invite_link.invite_link1)
+                                InlineKeyboardButton("🔸1 عضویت در چنل 🔹", url=invite_link.invite_link)
                             ],
                             [
-                                InlineKeyboardButton("🔸2 عضویت در چنل 🔹", url=invite_link.invite_link2)
+                                InlineKeyboardButton("🔸2 عضویت در چنل 🔹", url=invite_linc.invite_link2)
                             ],
                             [
                                 InlineKeyboardButton("👁‍🗨 بررسی عضویت 👁‍🗨", callback_data="refreshmeh")
