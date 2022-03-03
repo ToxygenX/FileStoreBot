@@ -331,7 +331,7 @@ async def button(bot: Client, cmd: CallbackQuery):
                                 InlineKeyboardButton("🔸1 عضویت در چنل 🔹", url=invite_link.invite_link)
                             ],
                             [
-                                InlineKeyboardButton("🔸2 عضویت در چنل 🔹", url=invite_linc.invite_link2)
+                                InlineKeyboardButton("🔸2 عضویت در چنل 🔹", url=invite_linc.invite_link)
                             ],
                             [
                                 InlineKeyboardButton("👁‍🗨 بررسی عضویت 👁‍🗨", callback_data="refreshmeh")
