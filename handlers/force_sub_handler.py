@@ -7,19 +7,28 @@ from pyrogram import Client
 from pyrogram.errors import FloodWait, UserNotParticipant
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message
 
+async def get_invite_link(bot: Client, chat_id: Union[str, int]):
+    try:
+        invite_link = await bot.create_chat_invite_link(chat_id=chat_id)
+        return invite_link
+    except FloodWait as e:
+        print(f"Sleep of {e.x}s caused by FloodWait ...")
+        await asyncio.sleep(e.x)
+        return await get_invite_link(bot, chat_id)
+
 
 async def handle_force_sub(bot: Client, cmd: Message):
-    if Config.UPDATES_CHANNEL:
-        if type(Config.UPDATES_CHANNEL[0]) == int:
-            for m in Config.UPDATES_CHANNEL:
-                channel_chat_id = int(m)
-        elif type(Config.UPDATES_CHANNEL[0]) == str:
-            for m in Config.UPDATES_CHANNEL:
-                channel_chat_id = m
+    if Config.UPDATES_CHANNEL1 and Config.UPDATES_CHANNEL2 and Config.UPDATES_CHANNEL1.startswith("-100") and Config.UPDATES_CHANNEL2.startswith("-100"):
+        channel_chat_id1 = int(Config.UPDATES_CHANNEL1)
+        channel_chat_id2 = int(Config.UPDATES_CHANNEL2)
+    elif Config.UPDATES_CHANNEL1 Config.UPDATES_CHANNEL2 and (not Config.UPDATES_CHANNEL1.startswith("-100")) and (not Config.UPDATES_CHANNEL2.startswith("-100")):
+        channel_chat_id1 = Config.UPDATES_CHANNEL1
+        channel_chat_id2 = Config.UPDATES_CHANNEL2
     else:
         return 200
     try:
-        user = await bot.get_chat_member(chat_id=channel_chat_id, user_id=cmd.from_user.id)
+        user = await bot.get_chat_member(chat_id=channel_chat_id1, user_id=cmd.from_user.id)
+        user = await bot.get_chat_member(chat_id=channel_chat_id2, user_id=cmd.from_user.id)
         if user.status == "kicked":
             await bot.send_message(
                 chat_id=cmd.from_user.id,
@@ -30,10 +39,10 @@ async def handle_force_sub(bot: Client, cmd: Message):
             return 400
     except UserNotParticipant:
         try:
-            invite_link1 = await bot.create_chat_invite_link(chat_id=channel_chat_id[0]) 
-            invite_link2 = await bot.create_chat_invite_link(chat_id=channel_chat_id[1])
+            invite_link1 = await get_invite_link(bot, chat_id=channel_chat_id1) 
+            invite_link2 = await get_invite_link(bot, chat_id=channel_chat_id2)
         except Exception as err:
-            print(f"Unable to do Force Subscribe to {Config.UPDATES_CHANNEL}\n\nError: {err}")
+            print(f"Unable to do Force Subscribe to {Config.UPDATES_CHANNEL1} and {Config.UPDATES_CHANNEL2}\n\nError: {err}")
             return 200
         await bot.send_message(
             chat_id=cmd.from_user.id,
@@ -41,10 +50,10 @@ async def handle_force_sub(bot: Client, cmd: Message):
             reply_markup=InlineKeyboardMarkup(
                 [
                     [
-                        InlineKeyboardButton("🔸1 عضویت در چنل 🔹", url=invite_link1)
+                        InlineKeyboardButton("🔸1 عضویت در چنل 🔹", url=invite_link.invite_link1) 
                     ],
                     [
-                        InlineKeyboardButton("🔸2 عضویت در چنل 🔹", url=invite_link2)
+                        InlineKeyboardButton("🔸2 عضویت در چنل 🔹", url=invite_link.invite_link2) 
                     ],
                     [
                         InlineKeyboardButton("👁‍🗨 بررسی عضویت 👁‍🗨", callback_data="refreshForceSub")
