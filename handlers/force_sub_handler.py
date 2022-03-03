@@ -21,7 +21,7 @@ async def handle_force_sub(bot: Client, cmd: Message):
     if Config.UPDATES_CHANNEL1 and Config.UPDATES_CHANNEL2 and Config.UPDATES_CHANNEL1.startswith("-100") and Config.UPDATES_CHANNEL2.startswith("-100"):
         channel_chat_id1 = int(Config.UPDATES_CHANNEL1)
         channel_chat_id2 = int(Config.UPDATES_CHANNEL2)
-    elif Config.UPDATES_CHANNEL1 Config.UPDATES_CHANNEL2 and (not Config.UPDATES_CHANNEL1.startswith("-100")) and (not Config.UPDATES_CHANNEL2.startswith("-100")):
+    elif Config.UPDATES_CHANNEL1 and Config.UPDATES_CHANNEL2 and (not Config.UPDATES_CHANNEL1.startswith("-100")) and (not Config.UPDATES_CHANNEL2.startswith("-100")):
         channel_chat_id1 = Config.UPDATES_CHANNEL1
         channel_chat_id2 = Config.UPDATES_CHANNEL2
     else:
