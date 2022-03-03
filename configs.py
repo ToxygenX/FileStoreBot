@@ -9,7 +9,7 @@ class Config(object):
 	BOT_OWNER = list(set(int(x) for x in os.environ.get("BOT_OWNER", "").split()))
 	DATABASE_URL = os.environ.get("DATABASE_URL")
 	UPDATES_CHANNEL1 = os.environ.get("UPDATES_CHANNEL1")
- 	UPDATES_CHANNEL2 = os.environ.get("UPDATES_CHANNEL2")
+        UPDATES_CHANNEL2 = os.environ.get("UPDATES_CHANNEL2")
 	LOG_CHANNEL = os.environ.get("LOG_CHANNEL", None)
 	BANNED_USERS = set(int(x) for x in os.environ.get("BANNED_USERS", "").split())
 	FORWARD_AS_COPY = bool(os.environ.get("FORWARD_AS_COPY", True))
