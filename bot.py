@@ -320,8 +320,8 @@ async def button(bot: Client, cmd: CallbackQuery):
                     )
                     return
             except UserNotParticipant:
-                invite_link = await get_invite_link(channel_chat_id1)
-                invite_linc = await get_invite_link(channel_chat_id2)
+                invite_link = await get_invite_link(bot, channel_chat_id1)
+                invite_linc = await get_invite_link(bot, channel_chat_id2)
                 await cmd.answer("⚠️ شما هنوز در چنل ها عضو نشده اید!", show_alert=True)
                 await cmd.message.edit(
                     text="**لطفا در چنل های زیر عضو شده و پس از عضویت بر روی دکمه بررسی عضویت کلیک نمایید**",
