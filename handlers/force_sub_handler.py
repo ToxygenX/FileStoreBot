@@ -39,7 +39,9 @@ async def handle_force_sub(bot: Client, cmd: Message):
             return 400
     except UserNotParticipant:
         try:
-            invite_link = await bot.create_chat_invite_link(chat_id=chat_id)
+            invite_link = await bot.create_chat_invite_link(chat_id=channel_chat_id1)
+            invite_linq = await bot.create_chat_invite_link(chat_id=channel_chat_id2)
+           #invite_link = await bot.create_chat_invite_link(chat_id=chat_id)
             invite_link1 = await get_invite_link(bot, chat_id=channel_chat_id1) 
             invite_link2 = await get_invite_link(bot, chat_id=channel_chat_id2)
         except Exception as err:
@@ -54,7 +56,7 @@ async def handle_force_sub(bot: Client, cmd: Message):
                         InlineKeyboardButton("🔸1 عضویت در چنل 🔹", url=invite_link.invite_link1) 
                     ],
                     [
-                        InlineKeyboardButton("🔸2 عضویت در چنل 🔹", url=invite_link.invite_link2) 
+                        InlineKeyboardButton("🔸2 عضویت در چنل 🔹", url=invite_linq.invite_link2) 
                     ],
                     [
                         InlineKeyboardButton("👁‍🗨 بررسی عضویت 👁‍🗨", callback_data="refreshForceSub")
