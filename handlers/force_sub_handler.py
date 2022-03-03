@@ -8,16 +8,6 @@ from pyrogram.errors import FloodWait, UserNotParticipant
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message
 
 
-async def get_invite_link(bot: Client, chat_id: Union[str, int]):
-    try:
-        invite_link = await bot.create_chat_invite_link(chat_id=chat_id)
-        return invite_link
-    except FloodWait as e:
-        print(f"Sleep of {e.x}s caused by FloodWait ...")
-        await asyncio.sleep(e.x)
-        return await get_invite_link(bot, chat_id)
-
-
 async def handle_force_sub(bot: Client, cmd: Message):
     if Config.UPDATES_CHANNEL:
         if type(Config.UPDATES_CHANNEL[0]) == int:
@@ -40,8 +30,8 @@ async def handle_force_sub(bot: Client, cmd: Message):
             return 400
     except UserNotParticipant:
         try:
-            invite_link1 = await get_invite_link(bot, chat_id=channel_chat_id[0])
-            invite_link2 = await get_invite_link(bot, chat_id=channel_chat_id[1])
+            invite_link1 = await bot.create_chat_invite_link(chat_id=channel_chat_id[0]) 
+            invite_link2 = await bot.create_chat_invite_link(chat_id=channel_chat_id[1])
         except Exception as err:
             print(f"Unable to do Force Subscribe to {Config.UPDATES_CHANNEL}\n\nError: {err}")
             return 200
@@ -51,10 +41,10 @@ async def handle_force_sub(bot: Client, cmd: Message):
             reply_markup=InlineKeyboardMarkup(
                 [
                     [
-                        InlineKeyboardButton("🔸1 عضویت در چنل 🔹", url=invite_link.invite_link1)
+                        InlineKeyboardButton("🔸1 عضویت در چنل 🔹", url=invite_link1)
                     ],
                     [
-                        InlineKeyboardButton("🔸2 عضویت در چنل 🔹", url=invite_link.invite_link2)
+                        InlineKeyboardButton("🔸2 عضویت در چنل 🔹", url=invite_link2)
                     ],
                     [
                         InlineKeyboardButton("👁‍🗨 بررسی عضویت 👁‍🗨", callback_data="refreshForceSub")
