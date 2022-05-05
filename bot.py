@@ -7,7 +7,8 @@ from binascii import (
 )
 from pyrogram import (
     Client,
-    filters
+    filters, 
+    enums
 )
 from pyrogram.errors import (
     UserNotParticipant,
@@ -43,7 +44,7 @@ logging.getLogger("pyrogram").setLevel(logging.ERROR)
 MediaList = {}
 
 Bot = Client(
-    Config.BOT_USERNAME,
+    name=Config.BOT_USERNAME,
     bot_token=Config.BOT_TOKEN,
     api_id=Config.API_ID,
     api_hash=Config.API_HASH
@@ -71,7 +72,7 @@ async def start(bot: Client, cmd: Message):
         await add_user_to_database(bot, cmd)
         await cmd.reply_text(
             Config.HOME_TEXT.format(cmd.from_user.first_name, cmd.from_user.id),
-            parse_mode="Markdown",
+            parse_mode=enums.ParseMode.MARKDOWN,
             disable_web_page_preview=True,
             reply_markup=InlineKeyboardMarkup(
                 [
@@ -94,7 +95,7 @@ async def start(bot: Client, cmd: Message):
                 _response_msg = await cmd.reply_text(
                     text=f"**Total Files:** `{len(message_ids)}`",
                     quote=True,
-                    parse_mode="Markdown",
+                    parse_mode=enums.ParseMode.MARKDOWN,
                     disable_web_page_preview=True
                 )
             else:
@@ -105,7 +106,7 @@ async def start(bot: Client, cmd: Message):
             await cmd.reply_text("✨ فایل پاک شده است و لینک دیگر معتبر نیست!")
 
 
-@Bot.on_message((filters.document | filters.video | filters.audio) & ~filters.edited & ~filters.chat(Config.DB_CHANNEL))
+@Bot.on_message((filters.document | filters.video | filters.audio) & ~filters.chat(Config.DB_CHANNEL))
 async def main(bot: Client, message: Message):
     if message.chat.type == "private":
         await add_user_to_database(bot, message)
@@ -162,7 +163,7 @@ async def main(bot: Client, message: Message):
             await bot.send_message(
                 chat_id=int(Config.LOG_CHANNEL),
                 text=f"#FloodWait:\nGot FloodWait of `{str(sl.x)}s` from `{str(message.chat.id)}` !!",
-                parse_mode="Markdown",
+                parse_mode=enums.ParseMode.MARKDOWN,
                 disable_web_page_preview=True
             )
         except Exception as err:
@@ -170,7 +171,7 @@ async def main(bot: Client, message: Message):
             await bot.send_message(
                 chat_id=int(Config.LOG_CHANNEL),
                 text=f"#ERROR_TRACEBACK:\nGot Error from `{str(message.chat.id)}` !!\n\n**Traceback:** `{err}`",
-                parse_mode="Markdown",
+                parse_mode=enums.ParseMode.MARKDOWN,
                 disable_web_page_preview=True
             )
 
@@ -185,7 +186,7 @@ async def sts(_, m: Message):
     total_users = await db.total_users_count()
     await m.reply_text(
         text=f"**Total Users in DB:** `{total_users}`",
-        parse_mode="Markdown",
+        parse_mode=enums.ParseMode.MARKDOWN,
         quote=True
     )
 
@@ -315,7 +316,7 @@ async def button(bot: Client, cmd: CallbackQuery):
                 if user.status == "kicked":
                     await cmd.message.edit(
                         text="شما بن شده اید",
-                        parse_mode="markdown",
+                        parse_mode=enums.ParseMode.MARKDOWN,
                         disable_web_page_preview=True
                     )
                     return
@@ -338,19 +339,19 @@ async def button(bot: Client, cmd: CallbackQuery):
                             ]
                         ]
                     ),
-                    parse_mode="markdown"
+                    parse_mode=enums.ParseMode.MARKDOWN
                 )
                 return
             except Exception:
                 await cmd.message.edit(
                     text="خطایی رخ داده است. با پشتیبانی در تماس باشید",
-                    parse_mode="markdown",
+                    parse_mode=enums.ParseMode.MARKDOWN,
                     disable_web_page_preview=True
                 )
                 return
         await cmd.message.edit(
             text=Config.HOME_TEXT.format(cmd.message.chat.first_name, cmd.message.chat.id),
-            parse_mode="Markdown",
+            parse_mode=enums.ParseMode.MARKDOWN,
             disable_web_page_preview=True,
             reply_markup=InlineKeyboardMarkup(
                 [
