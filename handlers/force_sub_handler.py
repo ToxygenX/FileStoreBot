@@ -3,7 +3,7 @@ from typing import (
     Union
 )
 from configs import Config
-from pyrogram import Client
+from pyrogram import Client, enums
 from pyrogram.errors import FloodWait, UserNotParticipant
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton, Message
 
@@ -33,7 +33,7 @@ async def handle_force_sub(bot: Client, cmd: Message):
             await bot.send_message(
                 chat_id=cmd.from_user.id,
                 text="✨ شما به علت عدم رعایت قوانین از بات بن شده و دیگر نمیتوانید استفاده کنید!",
-                parse_mode="markdown",
+                parse_mode=enums.ParseMode.MARKDOWN,
                 disable_web_page_preview=True
             )
             return 400
@@ -61,14 +61,14 @@ async def handle_force_sub(bot: Client, cmd: Message):
                     ]
                 ]
             ),
-            parse_mode="markdown"
+            parse_mode=enums.ParseMode.MARKDOWN
         )
         return 400
     except Exception:
         await bot.send_message(
             chat_id=cmd.from_user.id,
             text="خطایی رخ داده است. با پشتیبانی در تماس باشید",
-            parse_mode="markdown",
+            parse_mode=enums.ParseMode.MARKDOWN,
             disable_web_page_preview=True
         )
         return 200
